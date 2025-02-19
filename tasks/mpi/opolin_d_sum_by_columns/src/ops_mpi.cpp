@@ -62,7 +62,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
       offset += rows_for_proc * cols_;
     }
   }
-  boost::mpi::scatterv(world_, input_matrix_.data(), send_counts, displs, local_matrix.data(), 0);
+  boost::mpi::scatterv(world_, input_matrix_.data(), send_counts, displs, local_matrix.data(), 0, 0);
   std::vector<int> local_sum(cols_, 0.0);
   for (size_t row = 0; row < local_rows; ++row) {
     for (size_t col = 0; col < cols_; ++col) {
