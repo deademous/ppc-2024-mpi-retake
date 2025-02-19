@@ -28,7 +28,7 @@ bool opolin_d_sum_by_columns_seq::SumColumnsMatrixSequential::ValidationImpl() {
   }
   rows_ = task_data->inputs_count[0];
   cols_ = task_data->inputs_count[1];
-  if (rows_ <= 0 || cols_ <=0) {
+  if (rows_ <= 0 || cols_ <= 0) {
     return false;
   }
   return true;
