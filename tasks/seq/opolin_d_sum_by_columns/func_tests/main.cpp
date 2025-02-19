@@ -46,7 +46,6 @@ TEST(opolin_d_sum_by_columns_seq, test_3x3_matrix) {
   task_data_seq->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
   task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   task_data_seq->outputs_count.emplace_back(out.size());
-
   opolin_d_sum_by_columns_seq::SumColumnsMatrixSequential test_task_sequential(task_data_seq);
   ASSERT_EQ(test_task_sequential.Validation(), true);
   test_task_sequential.PreProcessing();
