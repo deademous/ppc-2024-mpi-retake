@@ -12,7 +12,7 @@
 
 namespace opolin_d_sum_by_columns_mpi {
 
-class SimpleIterMethodkMPI : public ppc::core::Task {
+class SumColumnsMatrixMPI : public ppc::core::Task {
  public:
   explicit SumColumnsMatrixMPI(ppc::core::TaskDataPtr task_data) : Task(std::move(task_data)) {}
   bool PreProcessingImpl() override;
