@@ -36,8 +36,8 @@ bool opolin_d_sum_by_columns_seq::SumColumnsMatrixSequential::ValidationImpl() {
 
 bool opolin_d_sum_by_columns_seq::SumColumnsMatrixSequential::RunImpl() {
   // simple iteration method
-  for (int col = 0; col < cols_; ++col) {
-    for (int row = 0; row < rows_; ++row) {
+  for (size_t col = 0; col < cols_; ++col) {
+    for (size_t row = 0; row < rows_; ++row) {
       output_[col] += input_matrix_[(row * cols_) + col];
     }
   }

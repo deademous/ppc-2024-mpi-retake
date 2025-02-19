@@ -46,34 +46,38 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
   int size = world_.size();
   boost::mpi::broadcast(world_, rows_, 0);
   boost::mpi::broadcast(world_, cols_, 0);
-  int local_rows = rows_ / size + (rank < (rows_ % size) ? 1 : 0);
-  std::vector<double> local_matrix(local_rows * cols_);
+  size_t proc_count = static_cast<size_t>(size);
+  size_t local_rows = rows_ / proc_count + (static_cast<size_t>(rank) < (rows_ % proc_count) ? 1 : 0);
+  std::vector<int> local_matrix(local_rows * cols_);
   std::vector<int> send_counts;
   std::vector<int> displs;
   if (rank == 0) {
     send_counts.resize(size);
     displs.resize(size);
-    int offset = 0;
+    size_t offset = 0;
     for (int i = 0; i < size; ++i) {
-      int rows_for_proc = rows_ / size + (i < (rows_ % size) ? 1 : 0);
-      send_counts[i] = rows_for_proc * cols_;
-      displs[i] = offset;
+      size_t rows_for_proc = rows_ / proc_count + (static_cast<size_t>(i) < (rows_ % proc_count) ? 1 : 0);
+      send_counts[i] = static_cast<int>(rows_for_proc * cols_);
+      displs[i] = static_cast<int>(offset);
       offset += rows_for_proc * cols_;
     }
   }
-  boost::mpi::scatterv(world_, input_matrix_, send_counts, displs, local_matrix, 0);
-  std::vector<double> local_sum(cols_, 0.0);
-  for (int row = 0; row < local_rows; ++row) {
-    for (int col = 0; col < cols_; ++col) {
+  boost::mpi::scatterv(world_, input_matrix_.data(), send_counts, displs, local_matrix.data(), 0);
+  std::vector<int> local_sum(cols_, 0.0);
+  for (size_t row = 0; row < local_rows; ++row) {
+    for (size_t col = 0; col < cols_; ++col) {
       local_sum[col] += local_matrix[row * cols_ + col];
     }
   }
-  std::vector<double> gathered_sums;
-  boost::mpi::gather(world_, local_sum, gathered_sums, 0);
+  std::vector<int> gathered_sums;
+  if (rank == 0) {
+    gathered_sums.resize(size * cols_);
+  }
+  boost::mpi::gather(world_, local_sum.data(), static_cast<int>(cols_), gathered_sums.data(), 0);
   if (rank == 0) {
     output_.assign(cols_, 0.0);
     for (int proc = 0; proc < size; ++proc) {
-      for (int col = 0; col < cols_; ++col) {
+      for (size_t col = 0; col < cols_; ++col) {
         output_[col] += gathered_sums[proc * cols_ + col];
       }
     }
