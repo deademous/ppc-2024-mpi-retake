@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <ctime>
 #include <memory>
+#include <random>
 #include <vector>
 
 #include "core/task/include/task.hpp"
@@ -75,7 +76,7 @@ TEST(opolin_d_sum_by_columns_mpi, test_5x1_matrix) {
   std::shared_ptr<ppc::core::TaskData> task_data_mpi = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    matrix = = {1, 2, 3, 4, 5};
+    matrix = {1, 2, 3, 4, 5};
     expected = {15};
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
@@ -106,7 +107,7 @@ TEST(opolin_d_sum_by_columns_mpi, test_1x5_matrix) {
   std::shared_ptr<ppc::core::TaskData> task_data_mpi = std::make_shared<ppc::core::TaskData>();
 
   if (world.rank() == 0) {
-    matrix = = {1, 2, 3, 4, 5};
+    matrix = {1, 2, 3, 4, 5};
     expected = {1, 2, 3, 4, 5};
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
