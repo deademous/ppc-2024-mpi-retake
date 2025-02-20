@@ -44,8 +44,8 @@ TEST(opolin_d_sum_by_columns_seq, test_pipeline_run) {
   // Create TaskData
   auto task_data_seq = std::make_shared<ppc::core::TaskData>();
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-  task_data_seq->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-  task_data_seq->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+  task_data_seq->inputs_count.emplace_back(rows);
+  task_data_seq->inputs_count.emplace_back(cols);
   task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   task_data_seq->outputs_count.emplace_back(out.size());
 
@@ -86,8 +86,8 @@ TEST(opolin_d_sum_by_columns_seq, test_task_run) {
   // Create TaskData
   auto task_data_seq = std::make_shared<ppc::core::TaskData>();
   task_data_seq->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-  task_data_seq->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-  task_data_seq->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+  task_data_seq->inputs_count.emplace_back(rows);
+  task_data_seq->inputs_count.emplace_back(cols);
   task_data_seq->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
   task_data_seq->outputs_count.emplace_back(out.size());
 

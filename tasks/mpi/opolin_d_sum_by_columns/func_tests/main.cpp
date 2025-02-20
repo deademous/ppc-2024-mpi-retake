@@ -48,8 +48,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_3x3_matrix) {
     matrix = {1, 2, 3, 4, 5, 6, 7, 8, 9};
     expected = {12, 15, 18};
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+    task_data_mpi->inputs_count.emplace_back(rows);
+    task_data_mpi->inputs_count.emplace_back(cols);
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     task_data_mpi->outputs_count.emplace_back(out.size());
   }
@@ -79,8 +79,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_5x1_matrix) {
     matrix = {1, 2, 3, 4, 5};
     expected = {15};
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+    task_data_mpi->inputs_count.emplace_back(rows);
+    task_data_mpi->inputs_count.emplace_back(cols);
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     task_data_mpi->outputs_count.emplace_back(out.size());
   }
@@ -110,8 +110,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_1x5_matrix) {
     matrix = {1, 2, 3, 4, 5};
     expected = {1, 2, 3, 4, 5};
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+    task_data_mpi->inputs_count.emplace_back(rows);
+    task_data_mpi->inputs_count.emplace_back(cols);
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     task_data_mpi->outputs_count.emplace_back(out.size());
   }
@@ -141,8 +141,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_single_element_matrix) {
     matrix = {7};
     expected = {7};
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+    task_data_mpi->inputs_count.emplace_back(rows);
+    task_data_mpi->inputs_count.emplace_back(cols);
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     task_data_mpi->outputs_count.emplace_back(out.size());
   }
@@ -172,8 +172,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_negative_values) {
     matrix = {-2, -4, -12, -9, -6, -1, -23, -7, -8};
     expected = {-34, -17, -21};
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+    task_data_mpi->inputs_count.emplace_back(rows);
+    task_data_mpi->inputs_count.emplace_back(cols);
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     task_data_mpi->outputs_count.emplace_back(out.size());
   }
@@ -200,8 +200,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_wrong_size) {
 
   if (world.rank() == 0) {
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+    task_data_mpi->inputs_count.emplace_back(rows);
+    task_data_mpi->inputs_count.emplace_back(cols);
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     task_data_mpi->outputs_count.emplace_back(out.size());
   }
@@ -224,8 +224,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_100x100_matrix) {
   if (world.rank() == 0) {
     opolin_d_sum_by_columns_mpi::GenerateTestData(rows, cols, matrix, expected);
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+    task_data_mpi->inputs_count.emplace_back(rows);
+    task_data_mpi->inputs_count.emplace_back(cols);
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     task_data_mpi->outputs_count.emplace_back(out.size());
   }
@@ -255,8 +255,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_5x2_matrix) {
     matrix = {2, 12, 5, -7, 1, 8, 21, 9, -15, 6};
     expected = {14, 28};
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+    task_data_mpi->inputs_count.emplace_back(rows);
+    task_data_mpi->inputs_count.emplace_back(cols);
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     task_data_mpi->outputs_count.emplace_back(out.size());
   }
@@ -286,8 +286,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_2x5_matrix) {
     matrix = {2, 12, 5, -7, 1, 8, 21, 9, -15, 6};
     expected = {10, 33, 13, 2, 7};
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+    task_data_mpi->inputs_count.emplace_back(rows);
+    task_data_mpi->inputs_count.emplace_back(cols);
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     task_data_mpi->outputs_count.emplace_back(out.size());
   }
@@ -317,8 +317,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_simple_matrix) {
     matrix = {1, 0, 0, 0, 1, 0, 0, 0, 1};
     expected = {1, 1, 1};
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+    task_data_mpi->inputs_count.emplace_back(rows);
+    task_data_mpi->inputs_count.emplace_back(cols);
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     task_data_mpi->outputs_count.emplace_back(out.size());
   }

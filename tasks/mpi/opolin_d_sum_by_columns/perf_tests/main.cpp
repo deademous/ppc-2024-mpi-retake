@@ -50,8 +50,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_pipeline_run) {
     opolin_d_sum_by_columns_mpi::GenerateTestData(rows, cols, matrix, expected);
     // Create TaskData
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+    task_data_mpi->inputs_count.emplace_back(rows);
+    task_data_mpi->inputs_count.emplace_back(cols);
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     task_data_mpi->outputs_count.emplace_back(out.size());
   }
@@ -96,8 +96,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_task_run) {
     opolin_d_sum_by_columns_mpi::GenerateTestData(rows, cols, matrix, expected);
     // Create TaskData
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&rows));
-    task_data_mpi->inputs_count.emplace_back(reinterpret_cast<uint8_t *>(&cols));
+    task_data_mpi->inputs_count.emplace_back(rows);
+    task_data_mpi->inputs_count.emplace_back(cols);
     task_data_mpi->outputs.emplace_back(reinterpret_cast<uint8_t *>(out.data()));
     task_data_mpi->outputs_count.emplace_back(out.size());
   }
