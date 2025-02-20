@@ -15,7 +15,7 @@
 bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::PreProcessingImpl() {
   // init data
   if (world_.rank() == 0) {
-    auto *ptr = reinterpret_cast<double *>(task_data->inputs[0]);
+    auto *ptr = reinterpret_cast<int *>(task_data->inputs[0]);
     input_matrix_.assign(ptr, ptr + (rows_ * cols_));
     output_.resize(cols_, 0.0);
   }
@@ -87,7 +87,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
 
 bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::PostProcessingImpl() {
   if (world_.rank() == 0) {
-    auto *out = reinterpret_cast<double *>(task_data->outputs[0]);
+    auto *out = reinterpret_cast<int *>(task_data->outputs[0]);
     std::ranges::copy(output_, out);
   }
   return true;
