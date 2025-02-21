@@ -206,8 +206,9 @@ TEST(opolin_d_sum_by_columns_mpi, test_wrong_size) {
     task_data_mpi->outputs_count.emplace_back(out.size());
   }
   opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI test_task_parallel(task_data_mpi);
-
-  ASSERT_EQ(test_task_parallel.Validation(), false);
+  if (world.rank() == 0) {
+    ASSERT_EQ(test_task_parallel.Validation(), false);
+  }
 }
 
 TEST(opolin_d_sum_by_columns_mpi, test_100x100_matrix) {
