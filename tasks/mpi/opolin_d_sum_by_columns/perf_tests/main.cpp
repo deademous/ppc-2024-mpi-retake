@@ -37,8 +37,8 @@ void GenerateTestData(size_t rows_, size_t cols_, std::vector<int> &matrix, std:
 TEST(opolin_d_sum_by_columns_mpi, test_pipeline_run) {
   std::shared_ptr<ppc::core::TaskData> task_data_par = std::make_shared<ppc::core::TaskData>();
   boost::mpi::communicator world;
-  size_t rows = 1000;
-  size_t cols = 1000;
+  size_t rows = 4000;
+  size_t cols = 4000;
   std::vector<int> matrix;
   std::vector<int> expected;
 
@@ -84,8 +84,8 @@ TEST(opolin_d_sum_by_columns_mpi, test_pipeline_run) {
 
 TEST(opolin_d_sum_by_columns_mpi, test_task_run) {
   boost::mpi::communicator world;
-  size_t rows = 1000;
-  size_t cols = 1000;
+  size_t rows = 4000;
+  size_t cols = 4000;
   std::vector<int> matrix;
   std::vector<int> expected;
   std::vector<int> out(cols, 0);
