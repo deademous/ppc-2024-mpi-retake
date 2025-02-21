@@ -16,17 +16,17 @@
 
 namespace opolin_d_sum_by_columns_mpi {
 namespace {
-void GenerateTestData(size_t rows_, size_t cols_, std::vector<int> &matrix, std::vector<int> &expected) {
+void GenerateTestData(size_t rows, size_t cols, std::vector<int> &matrix, std::vector<int> &expected) {
   std::random_device dev;
   std::mt19937 gen(dev());
-  expected.resize(cols_, 0);
-  matrix.resize(rows_ * cols_);
-  for (size_t i = 0; i < rows_ * cols_; ++i) {
-    matrix[i] = (gen() % 200) - 100;
+  expected.resize(cols, 0);
+  matrix.resize(rows * cols);
+  for (size_t i = 0; i < rows * cols; ++i) {
+    matrix[i] = (static_cast<int>(gen()) % 200) - 100;
   }
-  for (size_t col = 0; col < cols_; ++col) {
-    for (size_t row = 0; row < rows_; ++row) {
-      expected[col] += matrix[(row * cols_) + col];
+  for (size_t col = 0; col < cols; ++col) {
+    for (size_t row = 0; row < rows; ++row) {
+      expected[col] += matrix[(row * cols) + col];
     }
   }
 }
