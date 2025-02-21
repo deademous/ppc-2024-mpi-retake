@@ -284,7 +284,7 @@ TEST(opolin_d_sum_by_columns_mpi, test_2x5_matrix) {
 
   if (world.rank() == 0) {
     matrix = {2, 12, 5, -7, 1, 8, 21, 9, -15, 6};
-    expected = {10, 33, 13, 2, 7};
+    expected = {10, 33, 14, -22, 7};
     task_data_mpi->inputs.emplace_back(reinterpret_cast<uint8_t *>(matrix.data()));
     task_data_mpi->inputs_count.emplace_back(rows);
     task_data_mpi->inputs_count.emplace_back(cols);

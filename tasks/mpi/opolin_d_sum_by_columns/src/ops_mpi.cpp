@@ -65,9 +65,9 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
     }
   }
   if (rank == 0) {
-    boost::mpi::scatterv(world_, input_matrix_.data(), send_counts, displs, local_matrix.data(), 0);
+    boost::mpi::scatterv(world_, input_matrix_.data(), send_counts, displs, local_matrix.data(), static_cast<int>(local_rows * cols_), 0);
   } else {
-    boost::mpi::scatterv(world_, local_matrix.data(), 0);
+    boost::mpi::scatterv(world_, local_matrix.data(), static_cast<int>(local_rows * cols_), 0);
   }
 
   std::vector<int> local_sum(cols_, 0);

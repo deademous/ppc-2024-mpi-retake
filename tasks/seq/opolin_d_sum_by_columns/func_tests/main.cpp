@@ -215,7 +215,7 @@ TEST(opolin_d_sum_by_columns_seq, test_2x5_matrix) {
   size_t rows = 2;
   size_t cols = 5;
   std::vector<int> matrix = {2, 12, 5, -7, 1, 8, 21, 9, -15, 6};
-  std::vector<int> expected = {10, 33, 13, 2, 7};
+  std::vector<int> expected = {10, 33, 14, -22, 7};
 
   std::vector<int> out(cols, 0);
 
