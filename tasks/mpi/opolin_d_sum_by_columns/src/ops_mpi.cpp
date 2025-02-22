@@ -80,7 +80,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
   if (rank == 0) {
     gathered_sums.resize(size * cols_);
   }
-  boost::mpi::gather(world_, local_sum.data(), static_cast<int>(cols_), rank == 0 ? gathered_sums.data() : nullptr, 0);  
+  boost::mpi::gather(world_, local_sum.data(), static_cast<int>(cols_), rank == 0 ? gathered_sums.data() : nullptr, 0);
   if (rank == 0) {
     output_.assign(cols_, 0);
     for (int proc = 0; proc < size; ++proc) {
