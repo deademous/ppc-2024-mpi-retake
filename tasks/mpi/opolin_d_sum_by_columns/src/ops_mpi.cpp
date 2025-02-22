@@ -67,12 +67,13 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
       offset += rows_for_proc * cols_;
     }
   }
-  if (rank == 0) {
-    boost::mpi::scatterv(world_, input_matrix_.data(), send_counts, displs, local_matrix.data(),
-                         static_cast<int>(local_rows * cols_), 0);
-  } else {
-    boost::mpi::scatterv(world_, local_matrix.data(), static_cast<int>(local_rows * cols_), 0);
-  }
+  boost::mpi::scatterv(world_, 
+    (rank == 0) ? input_matrix_.data() : nullptr,
+    send_counts, 
+    displs, 
+    local_matrix.data(), 
+    static_cast<int>(local_rows * cols_), 
+    0);
 
   std::vector<int> local_sum(cols_, 0);
   for (size_t row = 0; row < local_rows; ++row) {
@@ -84,7 +85,8 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
   if (rank == 0) {
     gathered_sums.resize(size * cols_);
   }
-  boost::mpi::gather(world_, local_sum.data(), static_cast<int>(cols_), gathered_sums.data(), 0);
+  boost::mpi::gather(world_, local_sum.data(), static_cast<int>(cols_), 
+  rank == 0 ? gathered_sums.data() : nullptr, 0);
   if (rank == 0) {
     output_.assign(cols_, 0);
     for (int proc = 0; proc < size; ++proc) {
