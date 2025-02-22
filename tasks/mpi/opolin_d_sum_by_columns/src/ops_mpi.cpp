@@ -42,22 +42,19 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::ValidationImpl() {
 bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
   broadcast(world_, rows_, 0);
   broadcast(world_, cols_, 0);
-  int rank = world_.rank();
-  int size = world_.size();
-  auto proc_count = static_cast<size_t>(size);
+  auto proc_count = static_cast<size_t>(world_.size());
   auto remainder = rows_ % proc_count;
-  size_t base_rows = rows_ / proc_count;
   size_t local_rows = rows_ / proc_count;
-  if (rank < static_cast<int>(rows_ % proc_count)) {
+  if (world_.rank() < static_cast<int>(rows_ % proc_count)) {
     local_rows++;
   }
   std::vector<int> local_matrix(local_rows * cols_);
-  std::vector<int> send_counts(size, 0);
-  std::vector<int> displs(size, 0);
+  std::vector<int> send_counts(world_.size(), 0);
+  std::vector<int> displs(world_.size(), 0);
 
-  if (rank == 0) {
+  if (world_.rank() == 0) {
     size_t offset = 0;
-    for (int i = 0; i < size; ++i) {
+    for (int i = 0; i < world_.size(); ++i) {
       size_t rows_for_proc = rows_ / proc_count;
       if (remainder != 0 && i < static_cast<int>(remainder)) {
         rows_for_proc++;
@@ -67,7 +64,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
       offset += rows_for_proc * cols_;
     }
   }
-  if (rank == 0) {
+  if (world_.rank() == 0) {
     boost::mpi::scatterv(world_, input_matrix_.data(), send_counts, displs, local_matrix.data(),
                          static_cast<int>(local_rows * cols_), 0);
   } else {
@@ -81,13 +78,13 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
     }
   }
   std::vector<int> gathered_sums;
-  if (rank == 0) {
-    gathered_sums.resize(size * cols_);
+  if (world_.rank() == 0) {
+    gathered_sums.resize(world_.size() * cols_);
   }
   boost::mpi::gather(world_, local_sum.data(), static_cast<int>(cols_), gathered_sums.data(), 0);
-  if (rank == 0) {
+  if (world_.rank() == 0) {
     output_.assign(cols_, 0);
-    for (int proc = 0; proc < size; ++proc) {
+    for (int proc = 0; proc < world_.size(); ++proc) {
       for (size_t col = 0; col < cols_; ++col) {
         output_[col] += gathered_sums[(proc * cols_) + col];
       }
