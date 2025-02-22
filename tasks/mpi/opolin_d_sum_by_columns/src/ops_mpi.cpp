@@ -53,7 +53,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
   std::vector<int> send_counts(world_.size(), 0);
   std::vector<int> displs(world_.size(), 0);
   std::vector<int> gathered_sums;
-
+  // test comment
   if (world_.rank() == 0) {
     size_t offset = 0;
     for (int i = 0; i < world_.size(); ++i) {
