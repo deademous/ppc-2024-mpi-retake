@@ -47,7 +47,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
   auto proc_count = static_cast<size_t>(size);
   auto remainder = rows_ % proc_count;
   size_t local_rows = rows_ / proc_count;
-  if (remainder > 0) {
+  if (remainder != 0) {
     if (rank < static_cast<int>(remainder)) {
       local_rows++;
     }
@@ -60,7 +60,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
     size_t offset = 0;
     for (int i = 0; i < size; ++i) {
       size_t rows_for_proc = rows_ / proc_count;
-      if (remainder > 0 && i < static_cast<int>(remainder)) {
+      if (remainder != 0 && i < static_cast<int>(remainder)) {
         rows_for_proc++;
       }
       send_counts[i] = static_cast<int>(rows_for_proc * cols_);
