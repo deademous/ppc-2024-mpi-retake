@@ -5,7 +5,8 @@
 #include <boost/mpi/collectives/broadcast.hpp>
 #include <boost/mpi/collectives/gather.hpp>
 #include <boost/mpi/collectives/scatterv.hpp>
-#include <boost/serialization/vector.hpp>
+#include <boost/serialization/vector.hpp>  // NOLINT(misc-include-cleaner)
+#include <cmath>
 #include <cmath>
 #include <cstddef>
 #include <vector>
@@ -40,17 +41,17 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::ValidationImpl() {
 }
 
 bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
-  boost::mpi::broadcast(world_, rows_, 0);
-  boost::mpi::broadcast(world_, cols_, 0);
+  broadcast(world_, rows_, 0);
+  broadcast(world_, cols_, 0);
   int rank = world_.rank();
   int size = world_.size();
   auto proc_count = static_cast<size_t>(size);
   auto remainder = rows_ % proc_count;
-
   size_t base_rows = rows_ / proc_count;
-  size_t extra_rows = (rank < static_cast<int>(remainder)) ? 1 : 0;
-  size_t local_rows = base_rows + extra_rows;
-
+  size_t local_rows = rows_ / proc_count;
+  if (rank < static_cast<int>(rows_ % proc_count)) {
+    local_rows++;
+  }
   std::vector<int> local_matrix(local_rows * cols_);
   std::vector<int> send_counts(size, 0);
   std::vector<int> displs(size, 0);
@@ -67,8 +68,12 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
       offset += rows_for_proc * cols_;
     }
   }
-  boost::mpi::scatterv(world_, (rank == 0) ? input_matrix_.data() : nullptr, send_counts, displs, local_matrix.data(),
-                       static_cast<int>(local_rows * cols_), 0);
+  if (rank == 0) {
+    boost::mpi::scatterv(world_, input_matrix_.data(), send_counts, displs, local_matrix.data(),
+                         static_cast<int>(local_rows * cols_), 0);
+  } else {
+    boost::mpi::scatterv(world_, local_matrix.data(), static_cast<int>(local_rows * cols_), 0);
+  }
 
   std::vector<int> local_sum(cols_, 0);
   for (size_t row = 0; row < local_rows; ++row) {
@@ -80,7 +85,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
   if (rank == 0) {
     gathered_sums.resize(size * cols_);
   }
-  boost::mpi::gather(world_, local_sum.data(), static_cast<int>(cols_), rank == 0 ? gathered_sums.data() : nullptr, 0);
+  boost::mpi::gather(world_, local_sum.data(), static_cast<int>(cols_), gathered_sums.data(), 0);
   if (rank == 0) {
     output_.assign(cols_, 0);
     for (int proc = 0; proc < size; ++proc) {
