@@ -54,7 +54,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
   std::vector<int> displs(world_.size(), 0);
   std::vector<int> gathered_sums;
 
-  if (proc_rank == 0) {
+  if (world_.rank() == 0) {
     size_t offset = 0;
     for (int i = 0; i < world_.size(); ++i) {
       size_t rows_for_proc = rows_ / proc_count;
@@ -66,7 +66,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
       offset += rows_for_proc * cols_;
     }
   }
-  if (proc_rank == 0) {
+  if (world_.rank() == 0) {
     boost::mpi::scatterv(world_, input_matrix_.data(), send_counts, displs, local_matrix.data(),
                          static_cast<int>(local_rows * cols_), 0);
   } else {
