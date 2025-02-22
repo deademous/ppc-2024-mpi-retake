@@ -7,7 +7,6 @@
 #include <boost/mpi/collectives/scatterv.hpp>
 #include <boost/serialization/vector.hpp>  // NOLINT(misc-include-cleaner)
 #include <cmath>
-#include <cmath>
 #include <cstddef>
 #include <vector>
 
