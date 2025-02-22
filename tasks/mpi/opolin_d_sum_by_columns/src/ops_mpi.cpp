@@ -5,7 +5,7 @@
 #include <boost/mpi/collectives/broadcast.hpp>
 #include <boost/mpi/collectives/gather.hpp>
 #include <boost/mpi/collectives/scatterv.hpp>
-#include <boost/serialization/vector.hpp>  // NOLINT(misc-include-cleaner)
+#include <boost/serialization/vector.hpp>
 #include <cmath>
 #include <cstddef>
 #include <vector>
@@ -15,7 +15,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::PreProcessingImpl() {
   if (world_.rank() == 0) {
     auto *ptr = reinterpret_cast<int *>(task_data->inputs[0]);
     input_matrix_.assign(ptr, ptr + (rows_ * cols_));
-    output_.resize(cols_, 0.0);
+    output_.resize(cols_, 0);
   }
   return true;
 }
@@ -45,15 +45,15 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
   boost::mpi::broadcast(world_, rows_, 0);
   boost::mpi::broadcast(world_, cols_, 0);
   auto proc_count = static_cast<size_t>(size);
-  size_t local_rows = (rows_ / proc_count) + (static_cast<size_t>(rank) < (rows_ % proc_count) ? 1 : 0);
+  size_t local_rows = rows_ / proc_count;
+  if (rank < static_cast<int>(rows_ % proc_count)) {
+    local_rows++;
+  }
   std::vector<int> local_matrix(local_rows * cols_);
-
   std::vector<int> send_counts(size, 0);
   std::vector<int> displs(size, 0);
 
-  if (rank == 0) {
-    send_counts.resize(size);
-    displs.resize(size);
+  if (world_.rank() == 0) {
     size_t offset = 0;
     for (int i = 0; i < size; ++i) {
       size_t rows_for_proc = (rows_ / proc_count) + (static_cast<size_t>(i) < (rows_ % proc_count) ? 1 : 0);
@@ -62,7 +62,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
       offset += rows_for_proc * cols_;
     }
   }
-  if (rank == 0) {
+  if (world_.rank() == 0) {
     boost::mpi::scatterv(world_, input_matrix_.data(), send_counts, displs, local_matrix.data(),
                          static_cast<int>(local_rows * cols_), 0);
   } else {
