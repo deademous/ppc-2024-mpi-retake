@@ -48,8 +48,8 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
   size_t local_rows = (rows_ / proc_count) + (static_cast<size_t>(rank) < (rows_ % proc_count) ? 1 : 0);
   std::vector<int> local_matrix(local_rows * cols_);
 
-  std::vector<int> send_counts;
-  std::vector<int> displs;
+  std::vector<int> send_counts(size, 0);
+  std::vector<int> displs(size, 0);
 
   if (rank == 0) {
     send_counts.resize(size);
