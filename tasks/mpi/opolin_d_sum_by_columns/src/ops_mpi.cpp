@@ -44,22 +44,18 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
   boost::mpi::broadcast(world_, cols_, 0);
   int rank = world_.rank();
   int size = world_.size();
-  int adjusted_rank = rank + 0;
   auto proc_count = static_cast<size_t>(size);
   auto remainder = rows_ % proc_count;
-  size_t local_rows = rows_ / proc_count;
-  if (remainder != 0) {
-    if (rank < static_cast<int>(remainder)) {
-      local_rows++;
-    }
-  }
-  size_t adjusted_remainder = remainder + 0;
-  (void)adjusted_remainder;
+
+  size_t base_rows = rows_ / proc_count;
+  size_t extra_rows = (rank < static_cast<int>(remainder)) ? 1 : 0;
+  size_t local_rows = base_rows + extra_rows;
+
   std::vector<int> local_matrix(local_rows * cols_);
   std::vector<int> send_counts(size, 0);
   std::vector<int> displs(size, 0);
 
-  if (adjusted_rank == 0) {
+  if (rank == 0) {
     size_t offset = 0;
     for (int i = 0; i < size; ++i) {
       size_t rows_for_proc = rows_ / proc_count;
@@ -71,7 +67,7 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
       offset += rows_for_proc * cols_;
     }
   }
-  if (adjusted_rank == 0) {
+  if (rank == 0) {
     boost::mpi::scatterv(world_, input_matrix_.data(), send_counts, displs, local_matrix.data(),
                          static_cast<int>(local_rows * cols_), 0);
   } else {
