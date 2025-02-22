@@ -40,12 +40,12 @@ bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::ValidationImpl() {
 }
 
 bool opolin_d_sum_by_columns_mpi::SumColumnsMatrixMPI::RunImpl() {
-  int rank = world_.rank();
-  int size = world_.size();
   boost::mpi::broadcast(world_, rows_, 0);
   boost::mpi::broadcast(world_, cols_, 0);
+  int rank = world_.rank();
+  int size = world_.size();
   auto proc_count = static_cast<size_t>(size);
-  size_t remainder = rows_ % proc_count;
+  auto remainder = rows_ % proc_count;
   size_t local_rows = rows_ / proc_count;
   if (remainder > 0) {
     if (rank < static_cast<int>(remainder)) {
